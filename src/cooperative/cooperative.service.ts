@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import {InjectRepository} from "@nestjs/typeorm";
 import {Cooperative} from "../entities/Cooperative.entity";
 import {Repository} from "typeorm";
@@ -20,6 +20,12 @@ export class CooperativeService {
 
     async createCooperative(cooperativeInfo: AddCooperativeDto): Promise<Cooperative> {
         const cooperative = new Cooperative()
+
+        if(await this.findCooperativeByName(cooperativeInfo.name))
+            throw new HttpException({
+                status: HttpStatus.CONFLICT,
+                error: 'Cooperative with name already exists',
+            }, HttpStatus.CONFLICT);
 
         cooperative.name = cooperativeInfo.name
         cooperative.community = cooperativeInfo.community
@@ -145,5 +151,9 @@ export class CooperativeService {
 
     async findOneMember(id: string) {
         return this.cooperativeMemberRepository.findOneBy({id: id})
+    }
+
+    async findCooperativeByName(name: string) {
+        return this.cooperativeRepository.findOneBy({ name })
     }
 }
