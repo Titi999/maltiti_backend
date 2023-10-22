@@ -15,11 +15,11 @@ export class CooperativeMember {
     @Column()
     name: string;
 
-    @ManyToOne(() => Cooperative, (cooperative => cooperative.name))
+    @ManyToOne(() => Cooperative, (cooperative => cooperative.id))
     cooperative: string
 
     @Column()
-    @Unique(['email'])
+    @Unique(['phoneNumber'])
     phoneNumber: string
 
     @Column()

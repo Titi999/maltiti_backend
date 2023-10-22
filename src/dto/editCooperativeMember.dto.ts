@@ -20,7 +20,7 @@ export class EditCooperativeMemberDto {
     gpsAddress: string
 
     @IsNotEmpty()
-    image: string
+    image: any
 
     @IsNotEmpty()
     idType: string

@@ -13,6 +13,7 @@ import { join } from 'path';
 import {HandlebarsAdapter} from "@nestjs-modules/mailer/dist/adapters/handlebars.adapter";
 import { CooperativeModule } from './cooperative/cooperative.module';
 import {Cooperative} from "./entities/Cooperative.entity";
+import {CooperativeMember} from "./entities/CooperativeMember.entity";
 
 @Module({
   imports: [
@@ -26,7 +27,7 @@ import {Cooperative} from "./entities/Cooperative.entity";
           username: process.env.DATABASE_USER,
           password: process.env.DATABASE_PASSWORD,
           database: process.env.DATABASE_NAME,
-          entities: [User, Cooperative],
+          entities: [User, Cooperative, CooperativeMember],
           synchronize: true
       }),
       MailerModule.forRoot({

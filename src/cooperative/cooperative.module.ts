@@ -4,12 +4,13 @@ import { CooperativeController } from './cooperative.controller';
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {Cooperative} from "../entities/Cooperative.entity";
 import {CooperativeMember} from "../entities/CooperativeMember.entity";
+import {UploadService} from "../upload/upload.service";
 
 @Module({
   imports: [
       TypeOrmModule.forFeature([Cooperative, CooperativeMember])
   ],
-  providers: [CooperativeService],
+  providers: [CooperativeService, UploadService],
   controllers: [CooperativeController]
 })
 export class CooperativeModule {}

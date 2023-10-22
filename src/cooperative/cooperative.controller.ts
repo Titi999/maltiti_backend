@@ -1,4 +1,15 @@
-import {Body, Controller, Delete, Get, Param, Patch, Post, UseGuards} from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Patch,
+    Post,
+    UploadedFile,
+    UseGuards,
+    UseInterceptors
+} from '@nestjs/common';
 import {CooperativeService} from "./cooperative.service";
 import {IResponse} from "../interfaces/general";
 import {AddCooperativeDto} from "../dto/addCooperative.dto";
@@ -6,11 +17,13 @@ import {EditCooperativeDto} from "../dto/editCooperative.dto";
 import {AddCooperativeMemberDto} from "../dto/addCooperativeMember.dto";
 import {EditCooperativeMemberDto} from "../dto/editCooperativeMember.dto";
 import {JwtAuthGuard} from "../authentication/guards/jwt-auth.guard";
+import {AnyFilesInterceptor, FileInterceptor} from '@nestjs/platform-express';
 
+@UseGuards(JwtAuthGuard)
 @Controller('cooperative')
 export class CooperativeController {
     constructor(private cooperativeService: CooperativeService) {}
-    @UseGuards(JwtAuthGuard)
+
     @Get('cooperatives')
     async getAllCooperatives(): Promise<IResponse> {
         const cooperatives = await this.cooperativeService.getAllCooperatives();
@@ -81,9 +94,10 @@ export class CooperativeController {
         }
     }
 
-    @Get('add-member')
-    async addMember(memberInfo: AddCooperativeMemberDto) {
-        const cooperativeMember = await this.cooperativeService.createCooperativeMember(memberInfo)
+    @Post('add-member')
+    @UseInterceptors(FileInterceptor('image'))
+    async addMember(@Body() memberInfo: AddCooperativeMemberDto, @UploadedFile() image: Express.Multer.File) {
+        const cooperativeMember = await this.cooperativeService.createCooperativeMember(memberInfo, image)
 
         return {
             message: 'Cooperative member created successfully',
@@ -91,15 +105,15 @@ export class CooperativeController {
         }
     }
 
-    @Patch('edit-member')
-    async editMember(memberInfo: EditCooperativeMemberDto) {
-        const cooperativeMember = await this.cooperativeService.editMember(memberInfo)
-
-        return {
-            message: 'Member edit successfully',
-            data: cooperativeMember
-        }
-    }
+    // @Patch('edit-member')
+    // async editMember(memberInfo: EditCooperativeMemberDto) {
+    //     const cooperativeMember = await this.cooperativeService.editMember(memberInfo)
+    //
+    //     return {
+    //         message: 'Member edit successfully',
+    //         data: cooperativeMember
+    //     }
+    // }
 
     @Delete('delete-member/:id')
     async deleteMember(@Param('id') id: string) {
