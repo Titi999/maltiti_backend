@@ -1,10 +1,10 @@
 import {Injectable} from "@nestjs/common";
 import * as process from "process";
-import {S3} from "aws-sdk";
+import {PutObjectCommand, S3Client} from "@aws-sdk/client-s3";
 
 @Injectable()
 export class UploadService {
-    s3 = new S3({
+    s3 = new S3Client({
         region: process.env.AWS_REGION,
         credentials: {
             accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -25,8 +25,14 @@ export class UploadService {
             Key: key,
             Body: file.buffer,
         };
+        const putCommand = new PutObjectCommand({
+            Bucket: process.env.AWS_BUCKET_NAME,
+            Key: key,
+            Body: file.buffer,
+         });
 
-        const uploadResponse = await this.s3.upload(params).promise();
-        return uploadResponse.Location;
+         await this.s3.send(putCommand);
+
+        return `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${key}`
     }
 }
