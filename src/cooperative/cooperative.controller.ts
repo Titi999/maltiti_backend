@@ -55,7 +55,7 @@ export class CooperativeController {
     }
 
     @Patch('edit-cooperative')
-    async editCooperative(cooperativeInfo: EditCooperativeDto) {
+    async editCooperative(@Body() cooperativeInfo: EditCooperativeDto) {
         const cooperative = await this.cooperativeService.editCooperative(cooperativeInfo)
 
         return {
@@ -84,13 +84,23 @@ export class CooperativeController {
         }
     }
 
-    @Get('cooperative-members')
-    async getCooperativeMembers() {
-        const cooperative = await this.cooperativeService.findOneCooperative('')
+    @Get('member/:id')
+    async getCooperativeMember(@Param('id') id: string) {
+        const cooperativeMember = await this.cooperativeService.findOneMember(id)
 
         return {
-            message: 'Cooperative loaded successfully',
-            data: cooperative
+            message: 'Cooperative Member loaded successfully',
+            data: cooperativeMember
+        }
+    }
+
+    @Get('cooperative-members/:id')
+    async getMembersByCooperative(@Param('id') id: string) {
+        const cooperativeMembers = await this.cooperativeService.findMembersByCooperative(id)
+
+        return {
+            message: 'Cooperative Members loaded successfully',
+            data: cooperativeMembers
         }
     }
 

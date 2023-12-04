@@ -9,4 +9,14 @@ export class EditCooperativeDto {
 
     @IsNotEmpty()
     community: string
+
+    @IsNotEmpty()
+    registrationFee: string
+
+    @IsNotEmpty()
+    monthlyFee: string
+
+    @IsNotEmpty()
+    minimalShare: string
+
 }

@@ -6,7 +6,6 @@ import {CooperativeMember} from "../entities/CooperativeMember.entity";
 import {AddCooperativeDto} from "../dto/addCooperative.dto";
 import {EditCooperativeDto} from "../dto/editCooperative.dto";
 import {AddCooperativeMemberDto} from "../dto/addCooperativeMember.dto";
-import {EditCooperativeMemberDto} from "../dto/editCooperativeMember.dto";
 import {UploadService} from "../upload/upload.service";
 
 @Injectable()
@@ -29,21 +28,22 @@ export class CooperativeService {
                 error: 'Cooperative with name already exists',
             }, HttpStatus.CONFLICT);
 
+        this.setCooperative(cooperative, cooperativeInfo)
+
+        return this.cooperativeRepository.save(cooperative)
+    }
+
+    private setCooperative(cooperative: Cooperative, cooperativeInfo: AddCooperativeDto) {
         cooperative.name = cooperativeInfo.name
         cooperative.community = cooperativeInfo.community
         cooperative.minimalShare = cooperativeInfo.minimalShare
         cooperative.registrationFee = cooperativeInfo.registrationFee
         cooperative.monthlyFee = cooperativeInfo.monthlyFee
-
-        return this.cooperativeRepository.save(cooperative)
     }
 
     async editCooperative(cooperativeInfo: EditCooperativeDto): Promise<Cooperative> {
         const cooperative = await this.findOneCooperative(cooperativeInfo.id)
-
-        cooperative.name = cooperativeInfo.name
-        cooperative.community = cooperativeInfo.community
-
+        this.setCooperative(cooperative, cooperativeInfo)
         return this.cooperativeRepository.save(cooperative)
     }
 
@@ -122,6 +122,7 @@ export class CooperativeService {
 
         const queryBuilder = this.cooperativeMemberRepository
             .createQueryBuilder('cooperativeMember')
+            .leftJoinAndSelect('cooperativeMember.cooperative', 'cooperative') // Perform a left join with Cooperative entity
             .skip(skip)
             .take(limit);
 
@@ -135,15 +136,26 @@ export class CooperativeService {
             totalItems,
             currentPage: page,
             totalPages: Math.ceil(totalItems / limit),
-            members,
+            members: members
         };
     }
 
+
     async findOneMember(id: string) {
-        return this.cooperativeMemberRepository.findOneBy({id: id})
+        return await this.cooperativeMemberRepository
+            .createQueryBuilder('cooperativeMember')
+            .where('cooperativeMember.id = :id', {id})
+            .leftJoinAndSelect('cooperativeMember.cooperative', 'cooperative') // Load the cooperative relation
+            .getOne();
     }
+
+
 
     async findCooperativeByName(name: string) {
         return this.cooperativeRepository.findOneBy({ name })
+    }
+
+    async findMembersByCooperative(id: string) {
+        return this.cooperativeMemberRepository.findBy({cooperative: id})
     }
 }

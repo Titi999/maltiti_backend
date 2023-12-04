@@ -9,7 +9,7 @@ export class AddCooperativeDto {
 
     @IsNotEmpty()
     registrationFee: string
-z
+
     @IsNotEmpty()
     monthlyFee: string
 

@@ -1,11 +1,11 @@
 import {Column, Entity, PrimaryGeneratedColumn, Unique} from "typeorm";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuid } from 'uuid';
 
 @Entity({ name: 'Cooperatives'})
 export class Cooperative {
     constructor() {
         // Generate a UUID for the new user instance
-        this.id = uuidv4();
+        this.id = uuid();
     }
 
     @PrimaryGeneratedColumn('uuid')
