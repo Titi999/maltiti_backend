@@ -2,8 +2,8 @@ import {
     Body,
     Controller,
     Delete,
-    Get,
-    Param,
+    Get, HttpStatus,
+    Param, ParseFilePipe, ParseFilePipeBuilder,
     Patch,
     Post,
     UploadedFile,
@@ -96,7 +96,7 @@ export class CooperativeController {
 
     @Get('cooperative-members/:id')
     async getMembersByCooperative(@Param('id') id: string) {
-        const cooperativeMembers = await this.cooperativeService.findMembersByCooperative(id)
+        const cooperativeMembers = await this.cooperativeService.findAllMembersByCooperativeId(id)
 
         return {
             message: 'Cooperative Members loaded successfully',
@@ -115,15 +115,22 @@ export class CooperativeController {
         }
     }
 
-    // @Patch('edit-member')
-    // async editMember(memberInfo: EditCooperativeMemberDto) {
-    //     const cooperativeMember = await this.cooperativeService.editMember(memberInfo)
-    //
-    //     return {
-    //         message: 'Member edit successfully',
-    //         data: cooperativeMember
-    //     }
-    // }
+    @Patch('edit-member')
+    @UseInterceptors(AnyFilesInterceptor())
+    async editMember(@Body() memberInfo: EditCooperativeMemberDto,  @UploadedFile(new ParseFilePipeBuilder()
+        .addMaxSizeValidator({ maxSize: 2048 })
+        .build({
+            fileIsRequired: false
+        }),
+    ) image?: Express.Multer.File ) {
+        console.log(memberInfo)
+        const cooperativeMember = await this.cooperativeService.editMember(memberInfo, image)
+
+        return {
+            message: 'Member edit successfully',
+            data: cooperativeMember
+        }
+    }
 
     @Delete('delete-member/:id')
     async deleteMember(@Param('id') id: string) {

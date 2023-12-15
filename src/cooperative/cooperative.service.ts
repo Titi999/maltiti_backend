@@ -7,6 +7,7 @@ import {AddCooperativeDto} from "../dto/addCooperative.dto";
 import {EditCooperativeDto} from "../dto/editCooperative.dto";
 import {AddCooperativeMemberDto} from "../dto/addCooperativeMember.dto";
 import {UploadService} from "../upload/upload.service";
+import {EditCooperativeMemberDto} from "../dto/editCooperativeMember.dto";
 
 @Injectable()
 export class CooperativeService {
@@ -83,13 +84,6 @@ export class CooperativeService {
         return this.cooperativeMemberRepository.save(member)
     }
 
-    // async editMember(memberInfo: EditCooperativeMemberDto, image: Express.Multer.File): Promise<CooperativeMember> {
-    //     const member = await this.findOneMember(memberInfo.id)
-    //     await this.setMember(member, memberInfo, image)
-    //
-    //     return this.cooperativeMemberRepository.save(member)
-    // }
-
     async setMember(member: CooperativeMember, memberInfo: AddCooperativeMemberDto, image: Express.Multer.File) {
         member.name = memberInfo.name
         member.community = memberInfo.community
@@ -107,10 +101,22 @@ export class CooperativeService {
         member.phoneNumber = memberInfo.phoneNumber
         member.region = memberInfo.region
         member.secondaryOccupation = memberInfo.secondaryOccupation
-        await this.uploadService.uploadImage(image).then(url => {
-            member.image = url
-        })
+        if (this.isURL(memberInfo.image)) {
+            member.image = memberInfo.image
+        } else {
+            await this.uploadService.uploadImage(image).then(url => {
+                member.image = url
+            })
 
+        }
+    }
+
+    private isURL(data: string): boolean {
+        // Regular expression for a simple URL pattern
+        const urlPattern = /^(https?:\/\/)?([\w-]+(\.[\w-]+)+\/?|localhost|(\d{1,3}\.){3}\d{1,3})(:\d+)?(\/\S*)?$/;
+
+        // Test the provided string against the pattern
+        return urlPattern.test(data);
     }
 
     async deleteMember(id: string) {
@@ -155,7 +161,21 @@ export class CooperativeService {
         return this.cooperativeRepository.findOneBy({ name })
     }
 
-    async findMembersByCooperative(id: string) {
-        return this.cooperativeMemberRepository.findBy({cooperative: id})
+    async findAllMembersByCooperativeId(cooperativeId: string) {
+        const members = await this.cooperativeMemberRepository
+            .createQueryBuilder('cooperativeMember')
+            .leftJoinAndSelect('cooperativeMember.cooperative', 'cooperative')
+            .where('cooperative.id = :cooperativeId', { cooperativeId })
+            .getMany();
+
+        return members;
     }
+
+    async editMember(memberInfo: EditCooperativeMemberDto, image: Express.Multer.File): Promise<CooperativeMember> {
+        const member = await this.findOneMember(memberInfo.id)
+        await this.setMember(member, memberInfo, image)
+
+        return this.cooperativeMemberRepository.save(member)
+    }
+
 }
