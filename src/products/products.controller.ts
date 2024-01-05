@@ -5,7 +5,6 @@ import {IResponse} from "../interfaces/general";
 import {AddCooperativeDto} from "../dto/addCooperative.dto";
 import {AddProductDto} from "../dto/addProduct.dto";
 
-@UseGuards(JwtAuthGuard)
 @Controller('products')
 export class ProductsController {
     constructor(private productsService: ProductsService) {
@@ -14,6 +13,16 @@ export class ProductsController {
     @Get('all-products')
     async getAllProducts(@Query('page') page: number, @Query('searchTerm') searchTerm: string): Promise<IResponse> {
         const products = await this.productsService.getAllProducts(page, 10, searchTerm)
+
+        return {
+            message: 'Products loaded successfully',
+            data: products
+        }
+    }
+
+    @Get('best-products')
+    async getBestProducts(): Promise<IResponse> {
+        const products = await this.productsService.getBestProducts()
 
         return {
             message: 'Products loaded successfully',
@@ -31,6 +40,7 @@ export class ProductsController {
         }
     }
 
+    @UseGuards(JwtAuthGuard)
     @Post('add-product')
     async addProduct(@Body() productInfo: AddProductDto) {
         const product = await this.productsService.createProduct(productInfo)

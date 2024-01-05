@@ -36,6 +36,20 @@ export class ProductsService {
         };
     }
 
+    async getBestProducts() {
+        const queryBuilder = this.productsRepository
+            .createQueryBuilder('product')
+            .orderBy('RANDOM()')  // Order by random to get random products
+            .take(8);           // Take only 8 products
+
+        const products = await queryBuilder.getMany();
+
+        return {
+            totalItems: 8,  // Assuming you always want to retrieve 8 random products
+            data: products,
+        };
+    }
+
     async getOneProducts(id: string) {
         return this.productsRepository.findOneBy({id: id})
     }
