@@ -11,8 +11,8 @@ export class ProductsController {
     }
 
     @Get('all-products')
-    async getAllProducts(@Query('page') page: number, @Query('searchTerm') searchTerm: string): Promise<IResponse> {
-        const products = await this.productsService.getAllProducts(page, 10, searchTerm)
+    async getAllProducts(@Query('page') page: number, @Query('searchTerm') searchTerm: string, @Query('category') category: string): Promise<IResponse> {
+        const products = await this.productsService.getAllProducts(page, 10, searchTerm, category)
 
         return {
             message: 'Products loaded successfully',

@@ -14,7 +14,7 @@ export class ProductsService {
     ) {
     }
 
-    async getAllProducts(page: number = 1, limit: number = 10, searchTerm: string = '') {
+    async getAllProducts(page: number = 1, limit: number = 10, searchTerm: string = '', category: string = '') {
         const skip = (page - 1) * limit;
 
         const queryBuilder = this.productsRepository
@@ -24,6 +24,10 @@ export class ProductsService {
 
         if (searchTerm) {
             queryBuilder.where('LOWER(product.name) LIKE LOWER(:searchTerm)', { searchTerm: `%${searchTerm.toLowerCase()}%` });
+        }
+
+        if (category) {
+            queryBuilder.andWhere('LOWER(product.category) LIKE LOWER(:category)', { category: `%${category.toLowerCase()}%` });
         }
 
 
