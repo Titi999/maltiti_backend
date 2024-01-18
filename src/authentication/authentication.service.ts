@@ -61,11 +61,6 @@ export class AuthenticationService {
         }
         return null;
     }
-
-    findAll(): Promise<User[]> {
-        return this.authenticationRepository.find()
-    }
-
     sendWelcomeMail() {
         this.mailService.sendMail({
            to: 'abubakaribilal99@gmail.com',

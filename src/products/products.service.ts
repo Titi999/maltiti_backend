@@ -23,8 +23,9 @@ export class ProductsService {
             .take(limit);
 
         if (searchTerm) {
-            queryBuilder.where('product.name LIKE :searchTerm', { searchTerm: `%${searchTerm}%` });
+            queryBuilder.where('LOWER(product.name) LIKE LOWER(:searchTerm)', { searchTerm: `%${searchTerm.toLowerCase()}%` });
         }
+
 
         const [products, totalItems] = await queryBuilder.getManyAndCount();
 

@@ -12,7 +12,7 @@ export class Cooperative {
     id: string;
 
     @Column()
-    @Unique(['name'])
+
     name: string
 
     @Column()
