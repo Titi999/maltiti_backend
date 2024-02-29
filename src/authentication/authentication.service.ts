@@ -47,9 +47,12 @@ export class AuthenticationService {
         await this.refreshTokenIdsStorage.insert(user.id, refreshToken);
         delete user.password
         return {
-            access_token: accessToken,
-            refresh_token: refreshToken,
-            user: user
+            message: 'You have successfully logged in',
+            data: {
+                accessToken: accessToken,
+                refreshToken: refreshToken,
+                user: user
+            }
         };
     }
 
