@@ -5,9 +5,6 @@ export class AddProductDto {
     name: string;
 
     @IsNotEmpty()
-    code: string
-
-    @IsNotEmpty()
     ingredients: string
 
     @IsNotEmpty()
@@ -40,4 +37,13 @@ export class AddProductDto {
     @IsNotEmpty()
     @IsNumber()
     stockQuantity: string
+
+    @IsNotEmpty()
+    @IsNumber()
+    inBoxPrice: string
+
+    @IsNotEmpty()
+    @IsNumber()
+    quantityInBox: string
+
 }

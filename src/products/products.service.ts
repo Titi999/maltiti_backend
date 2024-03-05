@@ -2,8 +2,6 @@ import {Injectable} from "@nestjs/common";
 import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
 import {Product} from "../entities/Product.entity";
-import {AddCooperativeMemberDto} from "../dto/addCooperativeMember.dto";
-import {CooperativeMember} from "../entities/CooperativeMember.entity";
 import {AddProductDto} from "../dto/addProduct.dto";
 
 @Injectable()
@@ -71,12 +69,13 @@ export class ProductsService {
         product.image = productInfo.image
         product.description = productInfo.description
         product.ingredients = productInfo.ingredients
-        product.code = productInfo.code
         product.retail = productInfo.retail
         product.weight = productInfo.weight
         product.wholesale = productInfo.wholesale
         product.size = productInfo.size
         product.status = productInfo.status
+        product.inBoxPrice = productInfo.inBoxPrice
         product.stockQuantity = productInfo.stockQuantity
+        product.quantityInBox = productInfo.quantityInBox
     }
 }

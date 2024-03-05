@@ -15,10 +15,6 @@ export class Product {
     name: string
 
     @Column()
-    @Unique(['code'])
-    code: string
-
-    @Column()
     ingredients: string
 
     @Column()
@@ -47,5 +43,11 @@ export class Product {
 
     @Column()
     stockQuantity: string
+
+    @Column()
+    inBoxPrice: string
+
+    @Column()
+    quantityInBox: string
 
 }

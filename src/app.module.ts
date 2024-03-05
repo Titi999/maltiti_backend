@@ -30,7 +30,8 @@ import {Product} from "./entities/Product.entity";
           password: process.env.DATABASE_PASSWORD,
           database: process.env.DATABASE_NAME,
           entities: [User, Cooperative, CooperativeMember, Product],
-          synchronize: true
+          synchronize: true,
+          autoLoadEntities: false
       }),
       MailerModule.forRoot({
           transport: {
