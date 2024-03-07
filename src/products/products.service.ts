@@ -31,11 +31,13 @@ export class ProductsService {
 
         const [products, totalItems] = await queryBuilder.getManyAndCount();
 
+        const customizedProduct = products.map((product) => ({...product, ingredients: product.ingredients.split(',')}))
+
         return {
             totalItems,
             currentPage: page,
             totalPages: Math.ceil(totalItems / limit),
-            products,
+            products: customizedProduct,
         };
     }
 
@@ -47,9 +49,11 @@ export class ProductsService {
 
         const products = await queryBuilder.getMany();
 
+        const customizedProduct = products.map((product) => ({...product, ingredients: product.ingredients.split(',')}))
+
         return {
             totalItems: 8,  // Assuming you always want to retrieve 8 random products
-            data: products,
+            data: customizedProduct,
         };
     }
 
@@ -63,19 +67,52 @@ export class ProductsService {
         return this.productsRepository.save(product)
     }
 
+    async editProduct(id: string, productInfo: AddProductDto) {
+        const product = await this.productsRepository.findOneBy({id: id})
+        await this.setProduct(product, productInfo)
+        return this.productsRepository.save(product)
+    }
+
+    async changeProductStatus(id: string) {
+        const product = await this.productsRepository.findOneBy({id: id})
+        if (product.status === 'active') {
+            product.status = 'inactive';
+        } else if (product.status === 'inactive') {
+            product.status = 'active';
+        }
+        return this.productsRepository.save(product)
+    }
+
+    async favorite(id: string) {
+        const product = await this.productsRepository.findOneBy({id: id})
+        if (product.favorite) {
+            product.favorite = false;
+        } else if (!product.favorite) {
+            product.favorite = true;
+        }
+        return this.productsRepository.save(product)
+    }
+
     async setProduct(product: Product, productInfo: AddProductDto) {
         product.name = productInfo.name
         product.category = productInfo.category
         product.image = productInfo.image
         product.description = productInfo.description
-        product.ingredients = productInfo.ingredients
+        product.ingredients = productInfo.ingredients.toString()
         product.retail = productInfo.retail
         product.weight = productInfo.weight
         product.wholesale = productInfo.wholesale
         product.size = productInfo.size
         product.status = productInfo.status
-        product.inBoxPrice = productInfo.inBoxPrice
+        product.inBoxPrice = String(Number(productInfo.quantityInBox) * Number(productInfo.wholesale))
         product.stockQuantity = productInfo.stockQuantity
         product.quantityInBox = productInfo.quantityInBox
+        product.updatedAt = new Date()
+        product.rating = String((Math.random() * (3.5 - 5) + 5).toFixed(1))
+        product.reviews = String(Math.floor(Math.random() * 99) + 1)
+    }
+
+    async deleteProduct(id: string) {
+        return this.productsRepository.delete({id: id})
     }
 }

@@ -83,13 +83,13 @@ export class AuthenticationService {
 
     async refreshAccessToken(
         refreshToken: string,
-    ): Promise<{ access_token: string }> {
+    ): Promise<{ accessToken: string }> {
         try {
             const decoded = await this.jwtService.verifyAsync(refreshToken);
             await this.refreshTokenIdsStorage.validate(decoded.sub, refreshToken);
             const payload = { sub: decoded.sub, username: decoded.username };
             const accessToken = await this.jwtService.signAsync(payload);
-            return { access_token: accessToken };
+            return { accessToken };
         } catch (error) {
             this.logger.error(`Error: ${error.message}`);
             throw new UnauthorizedException('Invalid refresh token');

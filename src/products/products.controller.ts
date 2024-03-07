@@ -1,4 +1,4 @@
-import {Body, Controller, Get, Param, Post, Query, UseGuards} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, UseGuards} from '@nestjs/common';
 import {JwtAuthGuard} from "../authentication/guards/jwt-auth.guard";
 import {ProductsService} from "./products.service";
 import {IResponse} from "../interfaces/general";
@@ -48,6 +48,53 @@ export class ProductsController {
         return {
             message: 'Product created successfully',
             data: product
+        }
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Put('edit-product/:id')
+    async editProduct(@Param('id') id: string, @Body() productInfo: AddProductDto) {
+        const product = await this.productsService.editProduct(id, productInfo)
+        const customizedProduct = {...product, ingredients: product.ingredients.split(',')}
+
+        return {
+            message: 'Product edited successfully',
+            data: customizedProduct
+        }
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Delete('delete-product/:id')
+    async deleteCooperative(@Param('id') id: string) {
+        const deleteResult = await this.productsService.deleteProduct(id)
+
+        return {
+            message: 'Product deleted successfully',
+            data: deleteResult
+        }
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Patch('change-status/:id')
+    async changeProductStatus(@Param('id') id: string) {
+        const product = await this.productsService.changeProductStatus(id)
+        const customizedProduct = {...product, ingredients: product.ingredients.split(',')}
+
+        return {
+            message: 'Product status changed successfully',
+            data: customizedProduct
+        }
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Patch('favorite/:id')
+    async favorite(@Param('id') id: string) {
+        const product = await this.productsService.favorite(id)
+        const customizedProduct = {...product, ingredients: product.ingredients.split(',')}
+
+        return {
+            message: customizedProduct.favorite ? 'Product marked as favorite successfully' : 'Product unmarked successfully',
+            data: customizedProduct
         }
     }
 }

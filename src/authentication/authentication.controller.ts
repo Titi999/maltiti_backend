@@ -41,7 +41,7 @@ export class AuthenticationController {
     @UseGuards(JwtRefreshTokenGuard)
     @Post('refresh-token')
     async refreshToken(@Body() refreshTokenDto: RefreshTokenDto) {
-        return this.authService.refreshAccessToken(refreshTokenDto.refresh_token);
+        return this.authService.refreshAccessToken(refreshTokenDto.refreshToken);
     }
 
     @UseGuards(JwtAuthGuard)

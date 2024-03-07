@@ -1,11 +1,11 @@
-import {IsNotEmpty, IsNumber} from "class-validator";
+import {IsBoolean, IsNotEmpty, IsNumber} from "class-validator";
 
 export class AddProductDto {
     @IsNotEmpty()
     name: string;
 
     @IsNotEmpty()
-    ingredients: string
+    ingredients: string[]
 
     @IsNotEmpty()
     @IsNumber()
@@ -46,4 +46,6 @@ export class AddProductDto {
     @IsNumber()
     quantityInBox: string
 
+    @IsBoolean()
+    favorite: boolean = false
 }

@@ -50,4 +50,20 @@ export class Product {
     @Column()
     quantityInBox: string
 
+    @Column({
+        default: false
+    })
+    favorite: boolean;
+
+    @Column()
+    rating: string;
+
+    @Column()
+    reviews: string;
+
+    @Column({ default: new Date() })
+    createdAt: Date;
+
+    @Column({ default: new Date() })
+    updatedAt: Date;
 }
