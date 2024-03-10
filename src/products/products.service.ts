@@ -17,8 +17,6 @@ export class ProductsService {
 
         const queryBuilder = this.productsRepository
             .createQueryBuilder('product')
-            .skip(skip)
-            .take(limit);
 
         if (searchTerm) {
             queryBuilder.where('LOWER(product.name) LIKE LOWER(:searchTerm)', { searchTerm: `%${searchTerm.toLowerCase()}%` });
@@ -29,7 +27,7 @@ export class ProductsService {
         }
 
 
-        const [products, totalItems] = await queryBuilder.getManyAndCount();
+        const [products, totalItems] = await queryBuilder.skip(skip).take(10).getManyAndCount();
 
         const customizedProduct = products.map((product) => ({...product, ingredients: product.ingredients.split(',')}))
 
