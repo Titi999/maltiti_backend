@@ -16,7 +16,6 @@ export class AuthenticationController {
                 private authService: AuthenticationService) {
     }
     @UsePipes(new ValidationPipe())
-    @UseGuards(JwtAuthGuard)
     @Post('register')
     async register (@Body() userInfo: RegisterUserDto): Promise<IResponse> {
         const user = await this.usersService.create(userInfo)
