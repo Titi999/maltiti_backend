@@ -4,7 +4,8 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../../users/users.service';
 import { Logger } from '@nestjs/common';
-import {IJwtPayload} from "../../interfaces/jwt.interface";
+import { IJwtPayload } from '../../interfaces/jwt.interface';
+import { User } from '../../entities/User.entity';
 
 @Injectable()
 export class JwtRefreshTokenStrategy extends PassportStrategy(
@@ -25,7 +26,7 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(
     this.logger.warn('JwtRefreshTokenStrategy initialized');
   }
 
-  async validate(payload: IJwtPayload): Promise<any> {
+  async validate(payload: IJwtPayload): Promise<User> {
     this.logger.warn(`Payload: ${JSON.stringify(payload)}`);
     const user = await this.usersService.findOne(payload.sub);
     if (!user) {

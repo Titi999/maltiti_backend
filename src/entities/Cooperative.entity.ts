@@ -1,30 +1,28 @@
-import {Column, Entity, PrimaryGeneratedColumn, Unique} from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
-@Entity({ name: 'Cooperatives'})
+@Entity({ name: 'Cooperatives' })
 export class Cooperative {
-    constructor() {
-        // Generate a UUID for the new user instance
-        this.id = uuid();
-    }
+  constructor() {
+    // Generate a UUID for the new user instance
+    this.id = uuid();
+  }
 
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-    @Column()
+  @Column()
+  name: string;
 
-    name: string
+  @Column()
+  community: string;
 
-    @Column()
-    community: string
+  @Column()
+  registrationFee: string;
 
-    @Column()
-    registrationFee: string
+  @Column()
+  monthlyFee: string;
 
-    @Column()
-    monthlyFee: string
-
-    @Column()
-    minimalShare: string
-
+  @Column()
+  minimalShare: string;
 }

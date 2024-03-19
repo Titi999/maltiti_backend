@@ -1,28 +1,40 @@
-import {Equals, IS_STRONG_PASSWORD, IsEmail, IsNotEmpty, IsStrongPassword, Matches, MinLength} from "class-validator";
-
+import {
+  IsEmail,
+  IsEmpty,
+  IsNotEmpty,
+  IsOptional,
+  IsPhoneNumber,
+  IsStrongPassword,
+} from 'class-validator';
+import { IsNull } from 'typeorm';
 
 export class RegisterUserDto {
-    @IsNotEmpty()
-    name: string
+  @IsNotEmpty()
+  name: string;
 
-    @IsEmail()
-    email: string
+  @IsEmail()
+  email: string;
 
-    @IsNotEmpty()
-    @IsStrongPassword(
-        {
-            minLength: 8,
-            minLowercase: 1,
-            minNumbers: 1,
-            minSymbols: 1,
-            minUppercase: 1
-        }, {always: true}
-    )
-    password: string
+  @IsNotEmpty()
+  @IsStrongPassword(
+    {
+      minLength: 8,
+      minLowercase: 1,
+      minNumbers: 1,
+      minSymbols: 1,
+      minUppercase: 1,
+    },
+    { always: true },
+  )
+  password: string;
 
-    @IsNotEmpty()
-    confirmPassword: string
+  @IsNotEmpty()
+  confirmPassword: string;
 
-    @IsNotEmpty()
-    userType: string
+  @IsNotEmpty()
+  userType: string;
+
+  @IsOptional()
+  @IsPhoneNumber()
+  phoneNumber?: string;
 }
