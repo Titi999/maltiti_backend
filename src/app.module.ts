@@ -16,6 +16,10 @@ import { CooperativeMember } from './entities/CooperativeMember.entity';
 import { ProductsModule } from './products/products.module';
 import { Product } from './entities/Product.entity';
 import { Verification } from './entities/Verification.entity';
+import { CartModule } from './cart/cart.module';
+import { Cart } from './entities/Cart.entity';
+import { APP_GUARD } from '@nestjs/core';
+import { RolesGuard } from './authentication/guards/roles/roles.guard';
 
 @Module({
   imports: [
@@ -29,7 +33,14 @@ import { Verification } from './entities/Verification.entity';
       username: process.env.DATABASE_USER,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      entities: [User, Cooperative, CooperativeMember, Product, Verification],
+      entities: [
+        User,
+        Cooperative,
+        CooperativeMember,
+        Product,
+        Verification,
+        Cart,
+      ],
       synchronize: true,
       autoLoadEntities: false,
     }),
@@ -58,8 +69,10 @@ import { Verification } from './entities/Verification.entity';
     UsersModule,
     CooperativeModule,
     ProductsModule,
+    CartModule,
   ],
   controllers: [AppController],
   providers: [AppService],
+  exports: [TypeOrmModule],
 })
 export class AppModule {}

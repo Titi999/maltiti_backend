@@ -37,7 +37,10 @@ export class AuthenticationService {
       throw new UnauthorizedException('Invalid username or password');
     }
 
-    const passwordIsValid = await user.validatePassword(password);
+    const passwordIsValid = await this.usersService.validatePassword(
+      password,
+      user.password,
+    );
 
     if (!passwordIsValid) {
       throw new UnauthorizedException('Invalid username or password');
@@ -64,7 +67,10 @@ export class AuthenticationService {
 
   async validateUser(email: string, password: string): Promise<unknown> {
     const user = await this.usersService.findByEmail(email);
-    if (user && (await user.validatePassword(password))) {
+    if (
+      user &&
+      (await this.usersService.validatePassword(password, user.password))
+    ) {
       const { ...result } = user;
       return result;
     }

@@ -1,18 +1,18 @@
-import {IsNotEmpty} from "class-validator";
+import { IsNotEmpty } from 'class-validator';
 
 export class AddCooperativeDto {
-    @IsNotEmpty()
-    name: string;
+  @IsNotEmpty()
+  name: string;
 
-    @IsNotEmpty()
-    community: string
+  @IsNotEmpty()
+  community: string;
 
-    @IsNotEmpty()
-    registrationFee: string
+  @IsNotEmpty()
+  registrationFee: string;
 
-    @IsNotEmpty()
-    monthlyFee: string
+  @IsNotEmpty()
+  monthlyFee: string;
 
-    @IsNotEmpty()
-    minimalShare: string
+  @IsNotEmpty()
+  minimalShare: string;
 }

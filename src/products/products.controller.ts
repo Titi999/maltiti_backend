@@ -67,6 +67,7 @@ export class ProductsController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Roles(['admin'])
   @Post('add-product')
   async addProduct(
     @Body() productInfo: AddProductDto,
@@ -80,6 +81,7 @@ export class ProductsController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Roles(['admin'])
   @Put('edit-product/:id')
   async editProduct(
     @Param('id') id: string,
@@ -98,6 +100,7 @@ export class ProductsController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Roles(['admin'])
   @Delete('delete-product/:id')
   async deleteCooperative(
     @Param('id') id: string,
@@ -111,6 +114,7 @@ export class ProductsController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Roles(['admin'])
   @Patch('change-status/:id')
   async changeProductStatus(
     @Param('id') id: string,
@@ -128,6 +132,7 @@ export class ProductsController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Roles(['admin'])
   @Roles(['user'])
   @Patch('favorite/:id')
   async favorite(@Param('id') id: string): Promise<IResponse<product>> {

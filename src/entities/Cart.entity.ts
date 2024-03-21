@@ -24,7 +24,7 @@ export class Cart {
   @JoinColumn({ name: 'userId' })
   user: User;
 
-  @ManyToOne(() => Product, { lazy: true })
+  @ManyToOne(() => Product, { eager: true })
   @JoinColumn({ name: 'productId' })
   product: Product;
 

@@ -134,4 +134,8 @@ export class ProductsService {
   async deleteProduct(id: string): Promise<DeleteResult> {
     return this.productsRepository.delete({ id: id });
   }
+
+  async findOne(id: string): Promise<Product> {
+    return this.productsRepository.findOneBy({ id });
+  }
 }

@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { RegisterUserDto } from '../dto/registerUser.dto';
 import * as bcrypt from 'bcrypt';
 import { User } from '../entities/User.entity';
@@ -128,5 +128,12 @@ export class UsersService {
     const user = await this.userRepository.findOneBy({ id });
     user.emailVerifiedAt = new Date();
     await this.userRepository.save(user);
+  }
+
+  async validatePassword(
+    password: string,
+    userPassword: string,
+  ): Promise<boolean> {
+    return bcrypt.compare(password, userPassword);
   }
 }
