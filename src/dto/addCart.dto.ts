@@ -5,7 +5,7 @@ export class AddCartDto {
   id: string;
 }
 
-export class AddQuantityDto extends AddCartDto {
+export class AddQuantityDto {
   @IsNotEmpty()
   quantity: number;
 }

@@ -24,7 +24,9 @@ export class CartController {
 
   @Get(':id')
   @Roles(['user'])
-  async getCart(@Param('id') id: string): Promise<IResponse<[Cart[], number]>> {
+  async getCart(
+    @Param('id') id: string,
+  ): Promise<IResponse<[Cart[], number, number]>> {
     const response = await this.cartService.getCustomerCart(id);
     return {
       message: 'Customer cart loaded successfully',
@@ -62,7 +64,7 @@ export class CartController {
   async addQuantity(
     @Param('id') id: string,
     @Body() addQuantity: AddQuantityDto,
-  ): Promise<IResponse<Cart>> {
+  ): Promise<IResponse<[Cart[], number, number]>> {
     const response = await this.cartService.addQuantity(id, addQuantity);
     return {
       message: 'Product quantity added successfully',

@@ -16,11 +16,17 @@ export class CartService {
     private readonly cartRepository: Repository<Cart>,
     private readonly productsService: ProductsService,
   ) {}
-  async getCustomerCart(id: string): Promise<[Cart[], number]> {
+  async getCustomerCart(id: string): Promise<[Cart[], number, number]> {
     const user = await this.userService.findOne(id);
-    return await this.cartRepository.findAndCountBy({
+    const cartAndCount = await this.cartRepository.findAndCountBy({
       user: user,
     });
+    let total = 0;
+    cartAndCount[0].forEach(
+      cart => (total += cart.quantity * parseInt(cart.product.retail)),
+    );
+
+    return [...cartAndCount, total];
   }
 
   async removeFromCart(id: string): Promise<DeleteResult> {
@@ -53,10 +59,18 @@ export class CartService {
     return this.cartRepository.save(cart);
   }
 
-  async addQuantity(id: string, addQuantity: AddQuantityDto): Promise<Cart> {
-    const { existingCart } = await this.findCart(id, addQuantity.id);
-    existingCart.quantity = addQuantity.quantity;
-    return this.cartRepository.save(existingCart);
+  async addQuantity(
+    id: string,
+    addQuantity: AddQuantityDto,
+  ): Promise<[Cart[], number, number]> {
+    const cart = await this.cartRepository.findOne({
+      where: { id },
+      relations: ['user'],
+    });
+    const user = await cart.user;
+    cart.quantity = addQuantity.quantity;
+    await this.cartRepository.save(cart);
+    return await this.getCustomerCart(user.id);
   }
 
   async findCart(
