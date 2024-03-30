@@ -9,6 +9,8 @@ import { MailerService } from '@nestjs-modules/mailer';
 import * as process from 'process';
 import { Verification } from '../entities/Verification.entity';
 import { generateRandomToken } from '../utils/randomTokenGenerator';
+import { VerifyPhoneDto } from '../dto/UserInfo.dto';
+import axios from 'axios';
 
 @Injectable()
 export class UsersService {
@@ -121,7 +123,7 @@ export class UsersService {
   }
 
   async findOne(id: string): Promise<User> {
-    return this.userRepository.findOne({ where: { id: id } });
+    return this.userRepository.findOne({ where: { id } });
   }
 
   async verifyUserEmail(id: string): Promise<void> {
@@ -135,5 +137,42 @@ export class UsersService {
     userPassword: string,
   ): Promise<boolean> {
     return bcrypt.compare(password, userPassword);
+  }
+
+  async phoneVerification(
+    id: string,
+    phoneInfo: VerifyPhoneDto,
+  ): Promise<User> {
+    try {
+      const response = await axios.post(
+        `https://sms.arkesel.com/api/otp/verify`,
+        {
+          number: phoneInfo.phoneNumber,
+          code: phoneInfo.code,
+          'api-key': `${process.env.ARKESEL_SMS_API_KEY}`,
+        },
+        { headers: { 'api-key': `${process.env.ARKESEL_SMS_API_KEY}` } },
+      );
+      if (response.data.code === '1100') {
+        const user = await this.userRepository.findOneBy({ id });
+        user.phoneNumber = phoneInfo.phoneNumber;
+        return this.userRepository.save(user);
+      }
+      throw new HttpException(
+        {
+          status: HttpStatus.UNAUTHORIZED,
+          error: response.data.message,
+        },
+        HttpStatus.UNAUTHORIZED,
+      );
+    } catch (error) {
+      throw new HttpException(
+        {
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: error.response?.data?.message || 'Internal Server Error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }

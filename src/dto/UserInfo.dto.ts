@@ -13,3 +13,11 @@ export class UserInfoDto {
   @IsNotEmpty()
   userType: string;
 }
+
+export class VerifyPhoneDto {
+  @IsNotEmpty()
+  phoneNumber: string;
+
+  @IsNotEmpty()
+  code: string;
+}

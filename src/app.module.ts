@@ -20,6 +20,7 @@ import { CartModule } from './cart/cart.module';
 import { Cart } from './entities/Cart.entity';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './authentication/guards/roles/roles.guard';
+import { CheckoutModule } from './checkout/checkout.module';
 
 @Module({
   imports: [
@@ -70,6 +71,7 @@ import { RolesGuard } from './authentication/guards/roles/roles.guard';
     CooperativeModule,
     ProductsModule,
     CartModule,
+    CheckoutModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -20,6 +20,9 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { JwtRefreshTokenGuard } from './guards/jwt-refresh-token.guard';
 import { Request } from 'express';
 import { User } from '../entities/User.entity';
+import { VerifyPhoneDto } from '../dto/UserInfo.dto';
+import { Roles } from './guards/roles/roles.decorator';
+import { RolesGuard } from './guards/roles/roles.guard';
 
 @Controller('authentication')
 export class AuthenticationController {
@@ -34,6 +37,22 @@ export class AuthenticationController {
     delete user.password;
     return {
       message: 'User registration successful',
+      data: user,
+    };
+  }
+
+  @UsePipes(new ValidationPipe())
+  @Post('verify-phone/:id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(['user'])
+  async verifyPhone(
+    @Param('id') id: string,
+    @Body() phoneInfo: VerifyPhoneDto,
+  ): Promise<IResponse<User>> {
+    const user = await this.usersService.phoneVerification(id, phoneInfo);
+    delete user.password;
+    return {
+      message: 'Phone verification successful',
       data: user,
     };
   }

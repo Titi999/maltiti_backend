@@ -16,6 +16,7 @@ export class CartService {
     private readonly cartRepository: Repository<Cart>,
     private readonly productsService: ProductsService,
   ) {}
+
   async getCustomerCart(id: string): Promise<[Cart[], number, number]> {
     const user = await this.userService.findOne(id);
     const cartAndCount = await this.cartRepository.findAndCountBy({

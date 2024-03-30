@@ -12,5 +12,6 @@ import { ProductsModule } from '../products/products.module';
   imports: [TypeOrmModule.forFeature([Cart]), UsersModule, ProductsModule],
   controllers: [CartController],
   providers: [CartService, UsersService, ProductsService],
+  exports: [TypeOrmModule],
 })
 export class CartModule {}
