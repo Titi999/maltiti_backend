@@ -1,5 +1,4 @@
 import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
-import * as bcrypt from 'bcrypt';
 import { Exclude } from 'class-transformer';
 import { v4 as uuidv4 } from 'uuid';
 import { IsEmail } from 'class-validator';
@@ -26,7 +25,7 @@ export class User {
   @Exclude()
   password: string;
 
-  @Column()
+  @Column({ enum: ['user', 'admin'] })
   userType: string;
 
   @Column({ nullable: true })

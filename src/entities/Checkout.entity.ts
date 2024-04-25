@@ -3,16 +3,16 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { User } from './User.entity';
-import { Product } from './Product.entity';
-import { IsPositive } from 'class-validator';
-import { Checkout } from './Checkout.entity';
+import { Cart } from './Cart.entity';
+import { orderStatuses } from '../interfaces/checkout.interface';
 
-@Entity({ name: 'Carts' })
-export class Cart {
+@Entity({ name: 'Checkouts' })
+export class Checkout {
   constructor() {
     // Generate a UUID for the new user instance
     this.id = uuidv4();
@@ -25,21 +25,33 @@ export class Cart {
   @JoinColumn({ name: 'userId' })
   user: User;
 
-  @ManyToOne(() => Product, { eager: true })
-  @JoinColumn({ name: 'productId' })
-  product: Product;
+  @OneToMany(() => Cart, cart => cart.checkout, { lazy: true })
+  @JoinColumn()
+  carts: Cart[];
+
+  @Column({
+    enum: orderStatuses,
+  })
+  orderStatus: string;
 
   @Column()
-  @IsPositive()
-  quantity: number;
+  amount: string;
 
-  @ManyToOne(() => Checkout, { lazy: true, nullable: true })
-  @JoinColumn({ name: 'checkoutId' })
-  checkout?: Checkout | null;
+  @Column({ enum: ['paid', 'unpaid', 'refunded'] })
+  paymentStatus: string;
 
   @Column({ default: new Date() })
   createdAt: Date;
 
   @Column({ default: new Date() })
   updatedAt: Date;
+
+  @Column()
+  location: string;
+
+  @Column()
+  name: string;
+
+  @Column()
+  extraInfo: string;
 }

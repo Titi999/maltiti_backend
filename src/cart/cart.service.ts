@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, Repository } from 'typeorm';
+import { DeleteResult, IsNull, Repository } from 'typeorm';
 import { Cart } from '../entities/Cart.entity';
 import { UsersService } from '../users/users.service';
 import { ProductsService } from '../products/products.service';
@@ -21,6 +21,7 @@ export class CartService {
     const user = await this.userService.findOne(id);
     const cartAndCount = await this.cartRepository.findAndCountBy({
       user: user,
+      checkout: IsNull(),
     });
     let total = 0;
     cartAndCount[0].forEach(

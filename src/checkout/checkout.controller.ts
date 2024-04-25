@@ -1,14 +1,66 @@
-import { Controller, Get, Param, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { Roles } from '../authentication/guards/roles/roles.decorator';
-import { IResponse } from '../interfaces/general';
+import {
+  IInitalizeTransactionData,
+  IInitializeTransactionResponse,
+  IResponse,
+  ordersPagination,
+} from '../interfaces/general';
 import { CheckoutService } from './checkout.service';
 import { JwtAuthGuard } from '../authentication/guards/jwt-auth.guard';
 import { RolesGuard } from '../authentication/guards/roles/roles.guard';
+import { InitializeTransaction, PaymentStatus } from '../dto/checkout.dto';
+import { Checkout } from '../entities/Checkout.entity';
 
 @Controller('checkout')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class CheckoutController {
   constructor(private readonly checkoutService: CheckoutService) {}
+
+  @Get('orders/:id')
+  @Roles(['user'])
+  async getOrders(@Param('id') id: string): Promise<IResponse<Checkout[]>> {
+    const response = await this.checkoutService.getOrders(id);
+    return {
+      message: 'Customer cart loaded successfully',
+      data: response,
+    };
+  }
+
+  @Get('order/:id')
+  @Roles(['user'])
+  async getOrder(@Param('id') id: string): Promise<IResponse<Checkout>> {
+    const response = await this.checkoutService.getOrder(id);
+    return {
+      message: 'Customer cart loaded successfully',
+      data: response,
+    };
+  }
+
+  @Get('confirm-payment/:userId/:checkoutId')
+  @Roles(['user'])
+  async confirmPayment(
+    @Param('userId') userId: string,
+    @Param('checkoutId') checkoutId: string,
+  ): Promise<IResponse<Checkout>> {
+    const response = await this.checkoutService.confirmPayment(
+      userId,
+      checkoutId,
+    );
+    return {
+      message: 'Payment confirmed successfully',
+      data: response,
+    };
+  }
+
   @Get(':id/:location')
   @Roles(['user'])
   async getTransportation(
@@ -18,6 +70,42 @@ export class CheckoutController {
     const response = await this.checkoutService.getTransportation(id, location);
     return {
       message: 'Customer cart loaded successfully',
+      data: response,
+    };
+  }
+
+  @Get('orders')
+  @Roles(['admin'])
+  async getAllOrders(): Promise<IResponse<ordersPagination>> {
+    const response = await this.checkoutService.getAllOrders();
+    return {
+      message: 'Orders loaded successfully',
+      data: response,
+    };
+  }
+
+  @Post('initialize-transaction/:id')
+  @Roles(['user'])
+  async initializeTransaction(
+    @Body() data: InitializeTransaction,
+    @Param('id') id: string,
+  ): Promise<IInitializeTransactionResponse<IInitalizeTransactionData>> {
+    const response = await this.checkoutService.initializeTransaction(id, data);
+    return {
+      message: 'Customer cart loaded successfully',
+      ...response,
+    };
+  }
+
+  @Patch('order-status/:id')
+  @Roles(['admin'])
+  async orderStatus(
+    @Param('id') id: string,
+    @Body() data: PaymentStatus,
+  ): Promise<IResponse<Checkout>> {
+    const response = await this.checkoutService.orderStatus(id, data);
+    return {
+      message: 'Order status updated successfully',
       data: response,
     };
   }

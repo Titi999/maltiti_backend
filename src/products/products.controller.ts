@@ -102,7 +102,7 @@ export class ProductsController {
   @UseGuards(JwtAuthGuard)
   @Roles(['admin'])
   @Delete('delete-product/:id')
-  async deleteCooperative(
+  async deleteProduct(
     @Param('id') id: string,
   ): Promise<IResponse<DeleteResult>> {
     const deleteResult = await this.productsService.deleteProduct(id);

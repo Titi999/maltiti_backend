@@ -18,9 +18,8 @@ import { Product } from './entities/Product.entity';
 import { Verification } from './entities/Verification.entity';
 import { CartModule } from './cart/cart.module';
 import { Cart } from './entities/Cart.entity';
-import { APP_GUARD } from '@nestjs/core';
-import { RolesGuard } from './authentication/guards/roles/roles.guard';
 import { CheckoutModule } from './checkout/checkout.module';
+import { Checkout } from './entities/Checkout.entity';
 
 @Module({
   imports: [
@@ -41,6 +40,7 @@ import { CheckoutModule } from './checkout/checkout.module';
         Product,
         Verification,
         Cart,
+        Checkout,
       ],
       synchronize: true,
       autoLoadEntities: false,

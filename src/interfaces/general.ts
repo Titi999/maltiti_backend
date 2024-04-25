@@ -1,10 +1,21 @@
 import { Cooperative } from '../entities/Cooperative.entity';
 import { CooperativeMember } from '../entities/CooperativeMember.entity';
 import { User } from '../entities/User.entity';
+import { Checkout } from '../entities/Checkout.entity';
 
 export interface IResponse<T> {
   message: string;
   data: T;
+}
+
+export interface IInitializeTransactionResponse<T> extends IResponse<T> {
+  status: boolean;
+}
+
+export interface IInitalizeTransactionData {
+  authorization_url: string;
+  access_code: string;
+  reference: string;
 }
 
 export interface productsPagination {
@@ -12,6 +23,13 @@ export interface productsPagination {
   currentPage: number;
   totalPages: number;
   products: product[];
+}
+
+export interface ordersPagination {
+  totalItems: number;
+  currentPage: number;
+  totalPages: number;
+  orders: Checkout[];
 }
 
 export interface cooperativesPagination {
