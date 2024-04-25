@@ -4,7 +4,7 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # Install Python and bcrypt
-RUN apt-get update && apt-get install -y python
+RUN apt-get update && apt-get install -y python3
 RUN npm install bcrypt@5.1.0
 
 # Install other dependencies and build
