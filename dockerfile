@@ -1,5 +1,5 @@
 # Stage 1
-FROM node:14 AS builder
+FROM node:latest AS builder
 WORKDIR /usr/src/app
 COPY package*.json ./
 
