@@ -19,7 +19,7 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # Install Python and bcrypt in the alpine image
-RUN apk add --no-cache python3 make g++
+RUN apk add --no-cache "python3 make g++"
 RUN npm install bcrypt@5.1.0
 
 # Remove node_modules and reinstall
