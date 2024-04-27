@@ -1,35 +1,46 @@
-# Stage 1
-FROM node:20 AS builder
-WORKDIR /usr/src/app
+# PRODUCTION DOCKERFILE
+# ---------------------
+# This Dockerfile allows to build a Docker image of the NestJS application
+# and based on a NodeJS 20 image. The multi-stage mechanism allows to build
+# the application in a "builder" stage and then create a lightweight production
+# image containing the required dependencies and the JS build files.
+#
+# Dockerfile best practices
+# https://docs.docker.com/develop/develop-images/dockerfile_best-practices/
+# Dockerized NodeJS best practices
+# https://github.com/nodejs/docker-node/blob/master/docs/BestPractices.md
+# https://www.bretfisher.com/node-docker-good-defaults/
+# http://goldbergyoni.com/checklist-best-practice-of-node-js-in-production/
+
+FROM node:20-alpine as builder
+
+# ENV NODE_ENV build
+
+USER node
+WORKDIR /home/node
+
 COPY package*.json ./
 
-# Install Python and bcrypt
-RUN apt-get update && apt-get install -y python3
-RUN npm install bcrypt@5.1.0
+RUN npm ci
 
-# Install other dependencies and build
-RUN npm install
-RUN npm rebuild bcrypt
-COPY . .
+COPY --chown=node:node . .
+
+# Creates a "dist" folder with the production build
 RUN npm run build
 
-# Stage 2
-FROM node:20
-WORKDIR /usr/src/app
-COPY package*.json ./
+# FROM node:20-alpine
+#
+# ENV NODE_ENV production
+#
+# USER node
+# WORKDIR /home/node
+#
+# COPY --from=builder --chown=node:node /home/node/package*.json ./
+# COPY --from=builder --chown=node:node /home/node/node_modules/ ./node_modules/
+# COPY --from=builder --chown=node:node /home/node/dist/ ./dist/
 
-# Install Python and bcrypt in the alpine image
-RUN apk add --no-cache "python3 make g++"
-RUN npm install bcrypt@5.1.0
 
-# Remove node_modules and reinstall
-RUN rm -rf node_modules
-RUN npm cache clean --force
-RUN npm install -g npm@latest
-RUN npm install
-RUN npm rebuild bcrypt
+# Expose the port on which the app will run
+EXPOSE 3000
 
-# Copy build files
-COPY --from=builder /usr/src/app/dist ./dist
-
-CMD ["npm", "run", "start"]
+CMD [ "node", "dist/main.js" ]
