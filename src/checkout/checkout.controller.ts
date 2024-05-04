@@ -5,6 +5,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { Roles } from '../authentication/guards/roles/roles.decorator';
@@ -17,8 +18,13 @@ import {
 import { CheckoutService } from './checkout.service';
 import { JwtAuthGuard } from '../authentication/guards/jwt-auth.guard';
 import { RolesGuard } from '../authentication/guards/roles/roles.guard';
-import { InitializeTransaction, PaymentStatus } from '../dto/checkout.dto';
+import {
+  InitializeTransaction,
+  OrderStatus,
+  PaymentStatus,
+} from '../dto/checkout.dto';
 import { Checkout } from '../entities/Checkout.entity';
+import { paymentStatus, status } from '../interfaces/checkout.interface';
 
 @Controller('checkout')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -76,8 +82,19 @@ export class CheckoutController {
 
   @Get('orders')
   @Roles(['admin'])
-  async getAllOrders(): Promise<IResponse<ordersPagination>> {
-    const response = await this.checkoutService.getAllOrders();
+  async getAllOrders(
+    @Query('orderStatus') orderStatus: status,
+    @Query('searchTerm') searchTerm: string,
+    @Query('page') page: number,
+    @Query('paymentStatus') paymentStatus: paymentStatus,
+  ): Promise<IResponse<ordersPagination>> {
+    const response = await this.checkoutService.getAllOrders(
+      page,
+      10,
+      searchTerm,
+      orderStatus,
+      paymentStatus,
+    );
     return {
       message: 'Orders loaded successfully',
       data: response,
@@ -101,11 +118,35 @@ export class CheckoutController {
   @Roles(['admin'])
   async orderStatus(
     @Param('id') id: string,
-    @Body() data: PaymentStatus,
+    @Body() data: OrderStatus,
   ): Promise<IResponse<Checkout>> {
     const response = await this.checkoutService.orderStatus(id, data);
     return {
       message: 'Order status updated successfully',
+      data: response.raw,
+    };
+  }
+
+  @Patch('payment-status/:id')
+  @Roles(['admin'])
+  async paymentStatus(
+    @Param('id') id: string,
+    @Body() data: PaymentStatus,
+  ): Promise<IResponse<Checkout>> {
+    const response = await this.checkoutService.paymentStatus(id, data);
+    return {
+      message: 'Order status updated successfully',
+      data: response.raw,
+    };
+  }
+
+  @Patch('cancel-order/:id')
+  @Roles(['user'])
+  async cancelOrder(@Param('id') id: string): Promise<IResponse<Checkout>> {
+    const response = await this.checkoutService.cancelOrder(id);
+    return {
+      message:
+        'Order has been successfully cancelled. If you have paid, you will receive refund in 3 working days',
       data: response,
     };
   }

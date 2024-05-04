@@ -122,6 +122,14 @@ export class UsersService {
     return this.userRepository.findOneBy({ email: email });
   }
 
+  async findUserIncludingPasswordByEmail(email: string): Promise<User> {
+    return this.userRepository
+      .createQueryBuilder('user')
+      .addSelect('user.password')
+      .where('user.email = :email', { email })
+      .getOne();
+  }
+
   async findOne(id: string): Promise<User> {
     return this.userRepository.findOne({ where: { id } });
   }
@@ -143,9 +151,23 @@ export class UsersService {
     id: string,
     phoneInfo: VerifyPhoneDto,
   ): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: {
+        phoneNumber: phoneInfo.phoneNumber,
+      },
+    });
+    if (user) {
+      throw new HttpException(
+        {
+          code: HttpStatus.CONFLICT,
+          message: 'User with phone number already exists',
+        },
+        HttpStatus.CONFLICT,
+      );
+    }
     try {
       const response = await axios.post(
-        `https://sms.arkesel.com/api/otp/verify`,
+        `${process.env.ARKESEL_BASE_URL}/api/otp/verify`,
         {
           number: phoneInfo.phoneNumber,
           code: phoneInfo.code,

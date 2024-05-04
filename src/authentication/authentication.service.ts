@@ -31,7 +31,8 @@ export class AuthenticationService {
   async signIn(signInfo: SignInDto): Promise<IResponse<IUserToken>> {
     const { email, password } = signInfo;
 
-    const user = await this.usersService.findByEmail(email);
+    const user =
+      await this.usersService.findUserIncludingPasswordByEmail(email);
 
     if (!user) {
       throw new UnauthorizedException('Invalid username or password');
@@ -76,6 +77,7 @@ export class AuthenticationService {
     }
     return null;
   }
+
   async sendWelcomeMail(): Promise<unknown> {
     return await this.mailService.sendMail({
       to: 'abubakaribilal99@gmail.com',

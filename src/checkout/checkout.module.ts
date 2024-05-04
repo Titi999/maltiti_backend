@@ -6,10 +6,11 @@ import { CartModule } from '../cart/cart.module';
 import { UsersService } from '../users/users.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Checkout } from '../entities/Checkout.entity';
+import { NotificationService } from '../notification/notification.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Checkout]), UsersModule, CartModule],
   controllers: [CheckoutController],
-  providers: [CheckoutService, UsersService],
+  providers: [CheckoutService, UsersService, NotificationService],
 })
 export class CheckoutModule {}

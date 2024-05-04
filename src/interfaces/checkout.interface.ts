@@ -7,3 +7,7 @@ export const orderStatuses = [
 ] as const;
 
 export type status = (typeof orderStatuses)[number];
+
+export const paymentStatuses = ['paid', 'unpaid', 'refunded'];
+
+export type paymentStatus = (typeof paymentStatuses)[number];

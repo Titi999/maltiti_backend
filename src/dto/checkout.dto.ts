@@ -1,6 +1,6 @@
 import { IsNotEmpty } from 'class-validator';
 import { Optional } from '@nestjs/common';
-import { status } from '../interfaces/checkout.interface';
+import { paymentStatus, status } from '../interfaces/checkout.interface';
 
 export class InitializeTransaction {
   @IsNotEmpty()
@@ -19,6 +19,10 @@ export class InitializeTransaction {
   location: string;
 }
 
-export class PaymentStatus {
+export class OrderStatus {
   status: status;
+}
+
+export class PaymentStatus {
+  status: paymentStatus;
 }

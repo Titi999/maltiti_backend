@@ -85,6 +85,7 @@ export class CartService {
     const existingCart = await this.cartRepository.findOneBy({
       product,
       user,
+      checkout: IsNull(),
     });
 
     return { user, product, existingCart };

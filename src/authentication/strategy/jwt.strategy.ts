@@ -3,7 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, ExtractJwt } from 'passport-jwt';
 import { UsersService } from '../../users/users.service';
 import { JwtRefreshTokenStrategy } from './jwt-refresh-token.strategy';
-import {IJwtPayload} from "../../interfaces/jwt.interface";
+import { IJwtPayload } from '../../interfaces/jwt.interface';
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   private readonly logger = new Logger(JwtRefreshTokenStrategy.name);
