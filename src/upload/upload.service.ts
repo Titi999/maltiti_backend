@@ -6,10 +6,10 @@ import { PutObjectCommandInput } from '@aws-sdk/client-s3/dist-types/commands';
 @Injectable()
 export class UploadService {
   s3 = new S3Client({
-    region: process.env.AWS_REGION,
+    region: process.env.MALTITI_AWS_REGION,
     credentials: {
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      accessKeyId: process.env.MALTITI_AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.MALTITI_AWS_SECRET_ACCESS_KEY,
     },
   });
 
