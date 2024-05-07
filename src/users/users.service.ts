@@ -21,6 +21,7 @@ export class UsersService {
     private readonly verificationRepository: Repository<Verification>,
     private mailService: MailerService,
   ) {}
+
   async create(userInfo: RegisterUserDto): Promise<User> {
     if (userInfo.password !== userInfo.confirmPassword)
       throw new HttpException(
@@ -83,7 +84,7 @@ export class UsersService {
   ): Promise<void> {
     await this.mailService.sendMail({
       to: email,
-      from: 'no-reply@gmail.com',
+      from: 'no-reply@maltitiaenterprise.com',
       subject: 'Verify your email',
       template: './welcome',
       context: {
