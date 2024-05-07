@@ -82,8 +82,8 @@ export class UsersService {
     idToken: string,
   ): Promise<void> {
     await this.mailService.sendMail({
-      to: 'abubakaribilal99@gmail.com',
-      from: 'abubakaribilal99@gmail.com',
+      to: email,
+      from: 'no-reply@gmail.com',
       subject: 'Verify your email',
       template: './welcome',
       context: {
