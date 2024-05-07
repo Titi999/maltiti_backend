@@ -45,7 +45,7 @@ export class NotificationService {
   ): Promise<unknown> {
     return await this.mailerService.sendMail({
       to,
-      from: 'abubakaribilal99@gmail.com',
+      from: 'info@maltitiaenterprise.com',
       subject,
       template: './welcome',
       context: {

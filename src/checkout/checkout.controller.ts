@@ -16,8 +16,8 @@ import {
   ordersPagination,
 } from '../interfaces/general';
 import { CheckoutService } from './checkout.service';
-import { JwtAuthGuard } from '../authentication/guards/jwt-auth.guard';
-import { RolesGuard } from '../authentication/guards/roles/roles.guard';
+// import { JwtAuthGuard } from '../authentication/guards/jwt-auth.guard';
+// import { RolesGuard } from '../authentication/guards/roles/roles.guard';
 import {
   InitializeTransaction,
   OrderStatus,
@@ -27,7 +27,7 @@ import { Checkout } from '../entities/Checkout.entity';
 import { paymentStatus, status } from '../interfaces/checkout.interface';
 
 @Controller('checkout')
-@UseGuards(JwtAuthGuard, RolesGuard)
+// @UseGuards(JwtAuthGuard, RolesGuard)
 export class CheckoutController {
   constructor(private readonly checkoutService: CheckoutService) {}
 
@@ -49,6 +49,11 @@ export class CheckoutController {
       message: 'Customer cart loaded successfully',
       data: response,
     };
+  }
+
+  @Get('test-mail')
+  async testMail(): Promise<void> {
+    await this.checkoutService.testMail();
   }
 
   @Get('confirm-payment/:userId/:checkoutId')

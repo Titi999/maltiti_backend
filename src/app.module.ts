@@ -47,15 +47,16 @@ import { Checkout } from './entities/Checkout.entity';
     }),
     MailerModule.forRoot({
       transport: {
-        host: 'email-smtp.us-east-1.amazonaws.com',
+        // host: 'email-smtp.us-east-1.amazonaws.com',
+        host: process.env.TRANSPORT_HOST,
         port: 587,
         auth: {
-          user: process.env.AWS_SMTP_USERNAME,
-          pass: process.env.AWS_SMTP_PASSWORD,
+          user: process.env.TRANSPORT_USERNAME,
+          pass: process.env.TRANSPORT_PASSWORD,
         },
       },
       defaults: {
-        from: '"No Reply" <abubakaribilal99@gmail.com',
+        from: '"No Reply" <info@maltitiaenterprise.com',
       },
       template: {
         dir: join(__dirname, 'templates'),

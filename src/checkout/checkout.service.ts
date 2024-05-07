@@ -357,4 +357,16 @@ export class CheckoutService {
     );
     return await this.checkoutRepository.save(order);
   }
+
+  async testMail(): Promise<void> {
+    await this.notificationService.sendEmail(
+      'This is a test mail',
+      'abubakaribilal99@gmail.com',
+      'Testing 1, 2, 3',
+      'Bilal',
+      process.env.APP_URL,
+      'Go',
+      'Go',
+    );
+  }
 }
