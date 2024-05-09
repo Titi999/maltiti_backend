@@ -15,6 +15,8 @@ import { JwtRefreshTokenStrategy } from './strategy/jwt-refresh-token.strategy';
 import { IResponse, IUserToken } from '../interfaces/general';
 import { Verification } from '../entities/Verification.entity';
 import { User } from '../entities/User.entity';
+import { ForgotPasswordDto } from '../dto/forgotPassword.dto';
+import { generateRandomToken } from '../utils/randomTokenGenerator';
 
 @Injectable()
 export class AuthenticationService {

@@ -7,11 +7,12 @@ import { Cart } from '../entities/Cart.entity';
 import { UsersModule } from '../users/users.module';
 import { ProductsService } from '../products/products.service';
 import { ProductsModule } from '../products/products.module';
+import { NotificationService } from '../notification/notification.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Cart]), UsersModule, ProductsModule],
   controllers: [CartController],
-  providers: [CartService, UsersService, ProductsService],
+  providers: [CartService, UsersService, ProductsService, NotificationService],
   exports: [TypeOrmModule],
 })
 export class CartModule {}

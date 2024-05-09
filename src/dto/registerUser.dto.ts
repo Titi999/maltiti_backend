@@ -1,12 +1,10 @@
 import {
   IsEmail,
-  IsEmpty,
   IsNotEmpty,
   IsOptional,
   IsPhoneNumber,
   IsStrongPassword,
 } from 'class-validator';
-import { IsNull } from 'typeorm';
 
 export class RegisterUserDto {
   @IsNotEmpty()

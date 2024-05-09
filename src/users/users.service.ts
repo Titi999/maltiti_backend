@@ -1,4 +1,11 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  GoneException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { RegisterUserDto } from '../dto/registerUser.dto';
 import * as bcrypt from 'bcrypt';
 import { User } from '../entities/User.entity';
@@ -11,6 +18,8 @@ import { Verification } from '../entities/Verification.entity';
 import { generateRandomToken } from '../utils/randomTokenGenerator';
 import { VerifyPhoneDto } from '../dto/UserInfo.dto';
 import axios from 'axios';
+import { ForgotPasswordDto, ResetPasswordDto } from '../dto/forgotPassword.dto';
+import { NotificationService } from '../notification/notification.service';
 
 @Injectable()
 export class UsersService {
@@ -20,6 +29,7 @@ export class UsersService {
     @InjectRepository(Verification)
     private readonly verificationRepository: Repository<Verification>,
     private mailService: MailerService,
+    private notificationService: NotificationService,
   ) {}
 
   async create(userInfo: RegisterUserDto): Promise<User> {
@@ -197,5 +207,69 @@ export class UsersService {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+  }
+
+  async forgotPassword(forgotPasswordDto: ForgotPasswordDto): Promise<User> {
+    const user = await this.findByEmail(forgotPasswordDto.email);
+    if (!user) {
+      throw new NotFoundException('User with email does not exists');
+    }
+
+    const verification = new Verification();
+    const token = generateRandomToken();
+    verification.token = token;
+    verification.user = user;
+    verification.type = 'email';
+    await this.verificationRepository.save(verification);
+    const resetLink = `reset-password/${token}`;
+    await this.notificationService.sendEmail(
+      'You have requested a password reset. Please click the link below to reset your password. If you did not authorize this please ignore. Someone might have entered your email mistakenly',
+      user.email,
+      'Forgot Password',
+      user.name,
+      `${process.env.FRONTEND_URL}/${resetLink}`,
+      `${process.env.APP_URL}/${resetLink}`,
+      'Reset Password',
+    );
+    return user;
+  }
+
+  async resetPassword({
+    token,
+    confirmPassword,
+    password,
+  }: ResetPasswordDto): Promise<User> {
+    const verification = await this.verificationRepository.findOneByOrFail({
+      token,
+    });
+    const createdAt = new Date(verification.createdAt).getMinutes();
+    const now = new Date().getMinutes();
+
+    const differenceInMinutes = now - createdAt;
+
+    if (differenceInMinutes > 10) {
+      throw new GoneException({
+        message: 'The request for reset has expired. Please try again',
+        status: 410,
+      });
+    }
+
+    if (password !== confirmPassword) {
+      throw new BadRequestException({
+        message: 'Confirm password and password do not match',
+        status: 400,
+      });
+    }
+
+    const user = await this.userRepository.findOneOrFail({
+      where: {
+        id: verification.user.id,
+      },
+    });
+
+    const salt = await bcrypt.genSalt();
+    user.password = await bcrypt.hash(password, salt);
+
+    return await this.userRepository.save(user);
   }
 }
