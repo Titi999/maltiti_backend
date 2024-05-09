@@ -11,6 +11,7 @@ import { ConfigModule } from '@nestjs/config';
 import { LocalStrategy } from './strategy/local.strategy';
 import { JwtRefreshTokenStrategy } from './strategy/jwt-refresh-token.strategy';
 import { JwtStrategy } from './strategy/jwt.strategy';
+import { NotificationService } from '../notification/notification.service';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { JwtStrategy } from './strategy/jwt.strategy';
     RefreshTokenIdsStorage,
     LocalStrategy,
     JwtRefreshTokenStrategy,
+    NotificationService,
   ],
 })
 export class AuthenticationModule {}

@@ -20,6 +20,7 @@ import { CartModule } from './cart/cart.module';
 import { Cart } from './entities/Cart.entity';
 import { CheckoutModule } from './checkout/checkout.module';
 import { Checkout } from './entities/Checkout.entity';
+import { NotificationService } from './notification/notification.service';
 
 @Module({
   imports: [
@@ -75,7 +76,7 @@ import { Checkout } from './entities/Checkout.entity';
     CheckoutModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, NotificationService],
   exports: [TypeOrmModule],
 })
 export class AppModule {}

@@ -23,6 +23,7 @@ import { User } from '../entities/User.entity';
 import { VerifyPhoneDto } from '../dto/UserInfo.dto';
 import { Roles } from './guards/roles/roles.decorator';
 import { RolesGuard } from './guards/roles/roles.guard';
+import { ForgotPasswordDto, ResetPasswordDto } from '../dto/forgotPassword.dto';
 
 @Controller('authentication')
 export class AuthenticationController {
@@ -30,6 +31,7 @@ export class AuthenticationController {
     private usersService: UsersService,
     private authService: AuthenticationService,
   ) {}
+
   @UsePipes(new ValidationPipe())
   @Post('sign-up')
   async register(@Body() userInfo: RegisterUserDto): Promise<IResponse<User>> {
@@ -73,6 +75,30 @@ export class AuthenticationController {
   @Post('login')
   async signIn(@Body() signInDto: SignInDto): Promise<IResponse<IUserToken>> {
     return this.authService.signIn(signInDto);
+  }
+
+  @UsePipes(new ValidationPipe())
+  @Post('forgot-password')
+  async forgotPassword(
+    @Body() forgotPasswordDto: ForgotPasswordDto,
+  ): Promise<IResponse<User>> {
+    const user = await this.usersService.forgotPassword(forgotPasswordDto);
+    return {
+      message: `We have sent a reset email to ${user.email}`,
+      data: user,
+    };
+  }
+
+  @UsePipes(new ValidationPipe())
+  @Post('reset-password')
+  async resetPassword(
+    @Body() resetPasswordDto: ResetPasswordDto,
+  ): Promise<IResponse<User>> {
+    const user = await this.usersService.resetPassword(resetPasswordDto);
+    return {
+      message: `You have successfully reset your password`,
+      data: user,
+    };
   }
 
   @Get('send-email')
